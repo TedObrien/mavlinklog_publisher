@@ -12,9 +12,9 @@ find_package(mavlinklog_publisher REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(px4_msgs REQUIRED)
 
-
-add_executable(talker src/mavlinklogmsg_publisher.cpp)
-ament_target_dependencies(talker rclcpp mavlinklog_publisher)
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/MavlinkLogMsg.msg"
+)
 
 add_executable(listener src/mavlinklogmsg_subscriber.cpp)
 ament_target_dependencies(listener rclcpp mavlinklog_publisher)
@@ -22,17 +22,19 @@ ament_target_dependencies(listener rclcpp mavlinklog_publisher)
 add_executable(mavlinklog_publisher_node src/mavlinklog_publisher_node.cpp)
 ament_target_dependencies(mavlinklog_publisher_node rclcpp mavlinklog_publisher px4_msgs)
 
+add_executable(talker src/mavlinklogmsg_publisher.cpp)
+ament_target_dependencies(talker rclcpp mavlinklog_publisher)
+
+add_executable(my_node src/my_node.cpp)
+
+
 install(TARGETS
   talker
   listener
   mavlinklog_publisher_node
   DESTINATION lib/${PROJECT_NAME})
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/MavlinkLogMsg.msg"
-)
 
-add_executable(my_node src/my_node.cpp)
 target_include_directories(my_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
