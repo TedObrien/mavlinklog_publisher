@@ -20,7 +20,7 @@ public:
 private:
   void topic_callback(const mavlinklog_publisher::msg::MavlinkLogMsg & msg) const
   {
-    RCLCPP_INFO_STREAM(this->get_logger(), "I heard: '" << msg.message << "' from " << msg.name);
+    RCLCPP_INFO_STREAM(this->get_logger(), "I heard: '" << msg.message << "' from " << msg.id);
   }
   rclcpp::Subscription<mavlinklog_publisher::msg::MavlinkLogMsg>::SharedPtr subscription_;
 };

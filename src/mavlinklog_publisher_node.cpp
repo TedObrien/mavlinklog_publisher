@@ -9,6 +9,10 @@
 
 // Script needs to subscribe to the MavlinkLogMsg and publish to the MavlinkLog message
 
+// add command line arg for starting message
+// add command line arg for topic prefix
+
+
 using std::placeholders::_1;
 
 class MinimalSubscriber : public rclcpp::Node
@@ -25,55 +29,33 @@ public:
     
   }
   
-   // Function to convert a string into an array of ASCII codes
-    // void stringToAsciiArray(const std::string& str, unsigned char asciiArray[127]) {
-    //     // Clear the array
-    //     std::memset(asciiArray, 0, 127);
-        
-    //     // Copy ASCII values to the array, but no more than 126 (127th is for null termination)
-    //     size_t length = str.size() > 126 ? 126 : str.size();
-    //     for (size_t i = 0; i < length; ++i) {
-    //         asciiArray[i] = static_cast<unsigned char>(str[i]);  // Store ASCII code
-    //     }
-        
-    //     // Null-terminate at position 126, just to be safe
-    //     asciiArray[126] = '\0';
-    // }
-
-    // void demo() {
-    //     std::string input = "Hello";
-    //     unsigned char asciiArray[127];
-
-    //     // Call the function from within the class
-    //     stringToAsciiArray(input, asciiArray);
-
-    //     // Print the ASCII values
-    //     std::cout << "ASCII codes: ";
-    //     for (int i = 0; i < 126 && asciiArray[i] != '\0'; ++i) {
-    //         std::cout << static_cast<int>(asciiArray[i]) << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
 
 private:
   void topic_callback(const mavlinklog_publisher::msg::MavlinkLogMsg & msg)
   {
-    RCLCPP_INFO_STREAM(this->get_logger(), "I heard: '" << msg.message << "' from " << msg.name);
 
-    // demo();
-
-    // unsigned char asciiArray[127];
-
-    // Call the function from within the class
-    // stringToAsciiArray(msg.message, asciiArray);
-
-    // Publish to mavlink_log 
+    // When message received, Publish to mavlink_log 
     auto message = px4_msgs::msg::MavlinkLog();
-    // message.timestamp = 100000000; // find how to create timestamp
     message.timestamp = this->get_clock()->now().nanoseconds() / 1000;
+    message.severity = msg.level;
 
-    // Example: text received from another ROS 2 topic as a std::string
+    // Convert revieved string to ascii struct
     std::string received_text = msg.message;
+
+    // Combine id string to front of message string if populated
+    if(msg.id.length() > 0){
+      
+      RCLCPP_INFO_STREAM(this->get_logger(), "Prepending id to string");
+      received_text = "[" + msg.id + "] " + received_text;
+
+    }
+
+    // check if string > 127 characters and print truncation warning if so
+    if (msg.message.length() > 126){
+
+      RCLCPP_WARN_STREAM(this->get_logger(), "message truncated as greater than 127 characters");
+
+    } 
 
     // Copy the string to the std::array, truncating if necessary, and ensure null-termination
     std::copy(received_text.begin(),
@@ -83,18 +65,9 @@ private:
     // Ensure the last element is null-terminated
     message.text[std::min(received_text.size(), message.text.size() - 1)] = '\0';
 
-    // Print the message details
-    std::cout << "Text: ";
-    for (char c : message.text) {
-        std::cout << c;
-        if (c == '\0') break;  // Stop at the null-terminator
-    }
-    std::cout << "\nSeverity: " << static_cast<int>(message.severity) << "\n";
+    RCLCPP_INFO_STREAM(this->get_logger(), "Publishing: '" << received_text << "' with a severity of:" << unsigned(msg.level));
 
-
-
-    // RCLCPP_INFO_STREAM(this->get_logger(), "Publishing: '" << message.message << "'"); //uncomment once message working
-    publisher_->publish(message);
+    publisher_->publish(message); 
     
   }
   
@@ -107,7 +80,7 @@ private:
   {
     auto message = mavlinklog_publisher::msg::MavlinkLogMsg();
     message.level = 5;
-    message.name = "test_publisher";
+    message.id = "test_publisher";
     message.message = "Hello World";
     RCLCPP_INFO_STREAM(this->get_logger(), "Publishing: '" << message.message << "'");
     // publisher_->publish(message);

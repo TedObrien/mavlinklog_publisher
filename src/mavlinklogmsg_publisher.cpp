@@ -22,9 +22,9 @@ private:
   void timer_callback()
   {
     auto message = mavlinklog_publisher::msg::MavlinkLogMsg();
-    message.level = 5;
-    message.name = "test_publisher";
-    message.message = "Hello World";
+    message.level = 2;
+    message.id = "test-node";
+    message.message = "Hello World!";
     RCLCPP_INFO_STREAM(this->get_logger(), "Publishing: '" << message.message << "'");
     publisher_->publish(message);
   }
