@@ -8,13 +8,13 @@
 # Level of operation enumerated above.
 uint8 level
 
-# Severity = 6, info message in QGC
-# Severity = 5, QGC shouts and notice message in QGC
-# Severity = 4, QGC shouts message but no pop up
-# severity = 3 QGC shouts and error pop up in qgc
-# severity = 2 QGC shouts and ciritcal pop up in qgc
-# severity = 1 QGC shouts and alert pop up in qgc
-# severity = 0 
+# Severity = 6, Info - message in QGC
+# Severity = 5, Notice - QGC shouts 
+# Severity = 4, Warning - QGC shouts 
+# severity = 3 Error - QGC shouts and pop up in qgc
+# severity = 2 Critical - QGC shouts and pop up in qgc
+# severity = 1 Alert - QGC shouts and pop up in qgc
+# severity = 0 Emergency - QGC shouts and pop up in qgc
 
 # Optional ID of publisher.
 string id
