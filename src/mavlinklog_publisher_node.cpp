@@ -18,8 +18,8 @@ public:
   MinimalSubscriber()
   : Node("mavlinklog_publisher"), count_(0)
   {
-    this->declare_parameter("uav_name", ""); 
-    this->declare_parameter("message_on_start", true);
+    this->declare_parameter("uav_name", ""); // If ROS topic namespace is used. Empty by default
+    this->declare_parameter("message_on_start", true); // Send startup message
 
     ran_ = false;
 
@@ -41,16 +41,38 @@ public:
 private:
   void topic_callback(const mavlinklog_publisher::msg::MavlinkLogMsg & msg)
   {
+    // If MavlinkLogMsg received publish MavlinkLog
+    send_to_px4(msg);
+    
+  }
+  
+
+  void timer_callback()
+  {
+
+    // Send start message
+    if (!ran_ &&  this->get_parameter("message_on_start").as_bool()){
+
+      auto message = mavlinklog_publisher::msg::MavlinkLogMsg();
+      message.level = 5;
+      message.message = "MavlinkLog Publisher started ";
+      send_to_px4(message);
+      ran_ = true;
+
+    }
+    
+  }
+  
+  void send_to_px4(mavlinklog_publisher::msg::MavlinkLogMsg msg){
 
     auto message = px4_msgs::msg::MavlinkLog();
 
-    // Convert revieved string to ascii struct
+      // Convert revieved string to ascii struct
     std::string received_text = msg.message;
 
-    // Combine id string to front of message string if populated
+    // prepend id string to front of message string if populated
     if(msg.id.length() > 0){
       
-      RCLCPP_INFO_STREAM(this->get_logger(), "Prepending id to string");
       received_text = "[" + msg.id + "] " + received_text;
 
     }
@@ -70,32 +92,17 @@ private:
     // Ensure the last element is null-terminated
     message.text[std::min(received_text.size(), message.text.size() - 1)] = '\0';
 
-
     // Populate mavlink_log message
     message.timestamp = this->get_clock()->now().nanoseconds() / 1000;
     message.severity = msg.level;
 
-    RCLCPP_INFO_STREAM(this->get_logger(), "Publishing: '" << received_text << "' with a severity of:" << unsigned(msg.level));
+    RCLCPP_INFO_STREAM(this->get_logger(), "Publishing: '" << received_text << "' with a severity of: " << unsigned(msg.level));
 
     px4_publisher_->publish(message); 
     
-  }
-  
-  
-  void timer_callback()
-  {
 
-    if (!ran_ &&  this->get_parameter("message_on_start").as_bool()){
-
-      auto message = mavlinklog_publisher::msg::MavlinkLogMsg();
-      message.level = 5;
-      message.message = "MavlinkLog Publisher started ";
-      log_publisher_->publish(message);
-      ran_ = true;
-    }
-    
   }
-  
+
   bool ran_;
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<px4_msgs::msg::MavlinkLog>::SharedPtr px4_publisher_;
