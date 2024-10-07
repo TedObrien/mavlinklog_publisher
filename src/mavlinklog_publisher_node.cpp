@@ -39,13 +39,13 @@ public:
   
 
 private:
+
   void topic_callback(const mavlinklog_publisher::msg::MavlinkLogMsg & msg)
   {
     // If MavlinkLogMsg received publish MavlinkLog
     send_to_px4(msg);
     
   }
-  
 
   void timer_callback()
   {
@@ -67,7 +67,6 @@ private:
 
     auto message = px4_msgs::msg::MavlinkLog();
 
-      // Convert revieved string to ascii struct
     std::string received_text = msg.message;
 
     // prepend id string to front of message string if populated
@@ -84,7 +83,7 @@ private:
 
     } 
 
-    // Copy the string to the std::array, truncating if necessary, and ensure null-termination
+    // Convert revieved string to array
     std::copy(received_text.begin(),
               received_text.begin() + std::min(received_text.size(), message.text.size() - 1),
               message.text.begin());
@@ -100,7 +99,6 @@ private:
 
     px4_publisher_->publish(message); 
     
-
   }
 
   bool ran_;
