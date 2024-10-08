@@ -11,11 +11,12 @@ using std::placeholders::_1;
 
 // TODO
 // Best practise on variable,class names ect
+// rename mavlinklogmsg
 
-class MinimalSubscriber : public rclcpp::Node
+class MavlinkLogPublisher : public rclcpp::Node
 {
 public:
-  MinimalSubscriber()
+  MavlinkLogPublisher()
   : Node("mavlinklog_publisher"), count_(0)
   {
     this->declare_parameter("uav_name", ""); // If ROS topic namespace is used. Empty by default
@@ -30,10 +31,10 @@ public:
       this->get_parameter("uav_name").as_string() + "mavlink_log_msg", 10);
 
     timer_ = this->create_wall_timer(
-      5s, std::bind(&MinimalSubscriber::timer_callback, this));
+      5s, std::bind(&MavlinkLogPublisher::timer_callback, this));
 
     subscription_ = this->create_subscription<mavlinklog_publisher::msg::MavlinkLogMsg>(
-      "mavlink_log_msg", 10, std::bind(&MinimalSubscriber::topic_callback, this, _1));
+      "mavlink_log_msg", 10, std::bind(&MavlinkLogPublisher::topic_callback, this, _1));
     
   }
   
@@ -114,7 +115,7 @@ private:
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<MinimalSubscriber>());
+  rclcpp::spin(std::make_shared<MavlinkLogPublisher>());
   rclcpp::shutdown();
   return 0;
 }
