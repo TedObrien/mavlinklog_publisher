@@ -20,35 +20,32 @@ public:
   : Node("mavlinklog_publisher"), count_(0)
   {
     this->declare_parameter("uav_name", ""); // If ROS topic namespace is used. Empty by default
-    this->declare_parameter("message_on_start", true); // Send startup message
+    this->declare_parameter("message_on_start", true); // Send startup message. True by default
 
     ran_ = false;
 
     px4_publisher_ = this->create_publisher<px4_msgs::msg::MavlinkLog>(
       this->get_parameter("uav_name").as_string() + "/fmu/in/mavlink_log", 10);
 
-    log_publisher_ = this->create_publisher<mavlinklog_publisher::msg::MavlinkLogMsg>(
-      this->get_parameter("uav_name").as_string() + "mavlink_log_msg", 10);
-
     timer_ = this->create_wall_timer(
-      5s, std::bind(&MavlinkLogPublisher::timer_callback, this));
+      5s, std::bind(&MavlinkLogPublisher::TimerCallback, this));
 
     subscription_ = this->create_subscription<mavlinklog_publisher::msg::MavlinkLogMsg>(
-      "mavlink_log_msg", 10, std::bind(&MavlinkLogPublisher::topic_callback, this, _1));
+      this->get_parameter("uav_name").as_string() + "mavlink_log_msg", 10, std::bind(&MavlinkLogPublisher::MavlinkLogMsgCallback, this, _1));
     
   }
   
 
 private:
 
-  void topic_callback(const mavlinklog_publisher::msg::MavlinkLogMsg & msg)
+  void MavlinkLogMsgCallback(const mavlinklog_publisher::msg::MavlinkLogMsg & received_message)
   {
     // If MavlinkLogMsg received publish MavlinkLog
-    send_to_px4(msg);
+    PublishToPX4(received_message);
     
   }
 
-  void timer_callback()
+  void TimerCallback()
   {
 
     // Send start message
@@ -57,14 +54,14 @@ private:
       auto message = mavlinklog_publisher::msg::MavlinkLogMsg();
       message.level = 5;
       message.message = "MavlinkLog Publisher started ";
-      send_to_px4(message);
+      PublishToPX4(message);
       ran_ = true;
 
     }
     
   }
   
-  void send_to_px4(mavlinklog_publisher::msg::MavlinkLogMsg msg){
+  void PublishToPX4(mavlinklog_publisher::msg::MavlinkLogMsg msg){
 
     auto message = px4_msgs::msg::MavlinkLog();
 
@@ -105,7 +102,6 @@ private:
   bool ran_;
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<px4_msgs::msg::MavlinkLog>::SharedPtr px4_publisher_;
-  rclcpp::Publisher<mavlinklog_publisher::msg::MavlinkLogMsg>::SharedPtr log_publisher_;
   rclcpp::Subscription<mavlinklog_publisher::msg::MavlinkLogMsg>::SharedPtr subscription_;
   size_t count_;
 
