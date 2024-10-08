@@ -8,22 +8,21 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
-find_package(mavlinklog_publisher REQUIRED)  
 find_package(rclcpp REQUIRED)
 find_package(px4_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/MavlinkLogMsg.msg"
+  "msg/LogMsg.msg"
 )
 
 add_executable(listener src/mavlinklogmsg_subscriber.cpp)
-ament_target_dependencies(listener rclcpp mavlinklog_publisher)
+ament_target_dependencies(listener rclcpp )
 
 add_executable(mavlinklog_publisher_node src/mavlinklog_publisher_node.cpp)
-ament_target_dependencies(mavlinklog_publisher_node rclcpp mavlinklog_publisher px4_msgs)
+ament_target_dependencies(mavlinklog_publisher_node rclcpp px4_msgs)
 
 add_executable(talker src/mavlinklogmsg_publisher.cpp)
-ament_target_dependencies(talker rclcpp mavlinklog_publisher)
+ament_target_dependencies(talker rclcpp )
 
 add_executable(my_node src/my_node.cpp)
 
