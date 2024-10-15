@@ -18,11 +18,10 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 add_executable(mavlinklog_publisher_node src/mavlinklog_publisher_node.cpp)
 ament_target_dependencies(mavlinklog_publisher_node rclcpp px4_msgs)
 
-add_executable(talker src/mavlinklogmsg_publisher.cpp)
+add_executable(talker src/logmsg_publisher.cpp)
 ament_target_dependencies(talker rclcpp )
 
-add_executable(my_node src/my_node.cpp)
-
+# Following lines allow usage of custom message from within package
 rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
 target_link_libraries(mavlinklog_publisher_node  "${cpp_typesupport_target}") 
 target_link_libraries(talker "${cpp_typesupport_target}") 

@@ -18,7 +18,7 @@ public:
   {
     this->declare_parameter("uav_name", ""); // If ROS topic namespace is used. Empty by default
     this->declare_parameter("message_on_start", true); // Send startup message. True by default
-    ran_ = false;
+    ran_ = false; // Flag for publishing start message once
 
     px4_publisher_ = this->create_publisher<px4_msgs::msg::MavlinkLog>(
       this->get_parameter("uav_name").as_string() + "/fmu/in/mavlink_log", 10);
@@ -37,7 +37,7 @@ private:
   void LogMsgCallback(const mavlinklog_publisher::msg::LogMsg & received_message)
   {
 
-    // If LogMsg received publish MavlinkLog
+    // If LogMsg received publish MavlinkLog msg
     PublishToPX4(received_message);
     
   }
@@ -45,7 +45,7 @@ private:
   void TimerCallback()
   {
 
-    // Send start message
+    // Send start message once
     if (!ran_ &&  this->get_parameter("message_on_start").as_bool()){
 
       auto message = mavlinklog_publisher::msg::LogMsg();
