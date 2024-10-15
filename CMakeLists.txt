@@ -15,9 +15,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LogMsg.msg"
 )
 
-add_executable(listener src/mavlinklogmsg_subscriber.cpp)
-ament_target_dependencies(listener rclcpp )
-
 add_executable(mavlinklog_publisher_node src/mavlinklog_publisher_node.cpp)
 ament_target_dependencies(mavlinklog_publisher_node rclcpp px4_msgs)
 
@@ -26,10 +23,13 @@ ament_target_dependencies(talker rclcpp )
 
 add_executable(my_node src/my_node.cpp)
 
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(mavlinklog_publisher_node  "${cpp_typesupport_target}") 
+target_link_libraries(talker "${cpp_typesupport_target}") 
+
 
 install(TARGETS
   talker
-  listener
   mavlinklog_publisher_node
   DESTINATION lib/${PROJECT_NAME})
 

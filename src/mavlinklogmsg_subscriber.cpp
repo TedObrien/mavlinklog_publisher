@@ -3,7 +3,7 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
-#include "mavlinklog_publisher/msg/mavlink_log_msg.hpp"
+#include "mavlinklog_publisher/msg/log_msg.hpp"
 
 using std::placeholders::_1;
 
