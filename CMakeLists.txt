@@ -33,13 +33,9 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME})
 
 
-target_include_directories(my_node PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-target_compile_features(my_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(mavlinklog_publisher_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(talker PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS my_node
-  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
