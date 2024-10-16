@@ -3,7 +3,7 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
-#include "mavlinklog_publisher/msg/mavlink_log_msg.hpp"
+#include "mavlinklog_publisher/msg/log_msg.hpp"
 
 using namespace std::chrono_literals;
 
@@ -13,7 +13,7 @@ public:
   MinimalPublisher()
   : Node("mavlinklogmsg_publisher"), count_(0)
   {
-    publisher_ = this->create_publisher<mavlinklog_publisher::msg::MavlinkLogMsg>("mavlink_log_msg", 10);
+    publisher_ = this->create_publisher<mavlinklog_publisher::msg::LogMsg>("/log_msg", 10);
     timer_ = this->create_wall_timer(
       2s, std::bind(&MinimalPublisher::timer_callback, this));
   }
@@ -21,7 +21,7 @@ public:
 private:
   void timer_callback()
   {
-    auto message = mavlinklog_publisher::msg::MavlinkLogMsg();
+    auto message = mavlinklog_publisher::msg::LogMsg();
     message.level = 2;
     message.id = "test-node";
     message.message = "Hello World!";
@@ -29,7 +29,7 @@ private:
     publisher_->publish(message);
   }
   rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::Publisher<mavlinklog_publisher::msg::MavlinkLogMsg>::SharedPtr publisher_;
+  rclcpp::Publisher<mavlinklog_publisher::msg::LogMsg>::SharedPtr publisher_;
   size_t count_;
 };
 
