@@ -43,13 +43,14 @@ These instructions assume you have already installed and tested the following:
 > **NOTE**
 >  Exact commands may vary depending on the PX4 and gazebo versions you are using.
 
-1. If you do not done so already, clone and build the `px4_msgs`package.
+1. If you have not done so already, clone and build the `px4_msgs` and `Micro-XRCE-DDS-Agent` packages.
 
       ```
       cd ~/ros2_ws/src/
       git clone https://github.com/PX4/px4_msgs.git
+      git clone -b ros2 https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
       cd ~/ros2_ws/
-      colcon build --packages-select px4_msgs
+      colcon build --packages-select px4_msgs microxrcedds_agent
       ```
       > **NOTE**
       > Ensure you have checked out the branch corresponding to the version of PX4 you are using. You must already have ROS2 Humble installed.
@@ -92,6 +93,7 @@ These instructions assume you have already installed and tested the following:
 5. Start uXRCE-DDS bridge
 
     ```
+    source ~/ros2_ws/install/local_setup.bash
     MicroXRCEAgent udp4 -p 8888
     ```
     Confirm mavlink_log ROS2 has been created with `ros2 topic list`. Look for the output.
