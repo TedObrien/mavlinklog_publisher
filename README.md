@@ -15,14 +15,19 @@ colcon build --packages-select mavlinklog_publisher
 source install/local_setup.bash
 ros2 run mavlinklog_publisher mavlinklog_publisher_node
 ```
-### Optional command line args
-```
-uav_name 
-message_on_start
-```
+
+
+### Command-Line Arguments
+
+| Argument          | Description                                      | Default Value   | Required? |
+| ---------------   | ------------------------------------------------ | --------------- | --------- |
+| `uav_name`        | Prepends `uav_name` to ROS topics. Useful if using a topic namespace.              | `None`     | No       |
+| `message_on_start`| Prints message to QGC when node is started                          | `True`    | No        |
+
+
 
 > **NOTE**
->See more in depth instructions below.
+>See more in depth instructions on how to build and run below.
 
 ## Testing in SITL
 
@@ -86,7 +91,7 @@ These instructions assume you have already installed and configured the followin
     ```
     MicroXRCEAgent udp4 -p 8888
     ```
-    Confirm mavlink_log ROS2 has been created with `ros2 topic list`
+    Confirm mavlink_log ROS2 has been created with `ros2 topic list`, Look for the output.
 
     ```
     /uav1/fmu/in/mavlink_log
