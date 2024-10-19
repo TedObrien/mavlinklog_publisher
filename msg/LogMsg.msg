@@ -1,24 +1,19 @@
-# Possible levels of operations.
+# Message levels for different types of operations.
 
-# byte OK=0
-# byte WARN=1
-# byte ERROR=2
-# byte STALE=3
+# Level 6: Info - Displayed as a message in QGC.
+# Level 5: Notice - Displayed as a message in QGC + QGC announces.
+# Level 4: Warning - Displayed as a message in QGC + QGC announces.
+# Level 3: Error - Displayed as a message in QGC + QGC announces and displays pop-up.
+# Level 2: Critical - Displayed as a message in QGC + QGC announces (shouts) and displays pop-up.
+# Level 1: Alert - Displayed as a message in QGC + QGC announces and displays pop-up.
+# Level 0: Emergency - Displayed as a message in QGC + QGC announces and displays pop-up.
 
-# Level of operation enumerated above.
+# Level of operation as enumerated above.
 uint8 level
 
-# Severity = 6, Info - message in QGC
-# Severity = 5, Notice - QGC shouts 
-# Severity = 4, Warning - QGC shouts 
-# severity = 3 Error - QGC shouts and pop up in qgc
-# severity = 2 Critical - QGC shouts and pop up in qgc
-# severity = 1 Alert - QGC shouts and pop up in qgc
-# severity = 0 Emergency - QGC shouts and pop up in qgc
-
-# Optional ID of publisher.
+# Optional ID of the publisher.
 string id
 
-# A description of the status.
+# Descriptive message or status information.
 string message
 
