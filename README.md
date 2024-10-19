@@ -1,6 +1,6 @@
 # mavlinklog_publisher
 
-A ROS2 node intended for the publishing of human readable messages from a companion computer to QGroundControl via a Flight controller running PX4. The node subscribes to the [`LogMsg`](https://github.com/TedObrien/mavlinklog_publisher/blob/main/msg/LogMsg.msg) defined in this package and published a [`MavlinkLog`](https://github.com/PX4/px4_msgs/blob/main/msg/MavlinkLog.msg) message to the flight controller via the [XRCE-DDS bridge](https://docs.px4.io/main/en/middleware/uxrce_dds.html). This allows ROS2 nodes running on a companion computer to display messages to an operator, which is particularly useful when using [offboard mode](https://docs.px4.io/main/en/flight_modes/offboard.html).
+A ROS2 node intended for the publishing of human readable messages from a companion computer to QGroundControl via a flight controller running PX4. The node subscribes to the [`LogMsg`](https://github.com/TedObrien/mavlinklog_publisher/blob/main/msg/LogMsg.msg) defined in this package and published a [`MavlinkLog`](https://github.com/PX4/px4_msgs/blob/main/msg/MavlinkLog.msg) message to the flight controller via the [XRCE-DDS bridge](https://docs.px4.io/main/en/middleware/uxrce_dds.html). This functionality enables ROS2 nodes on the companion computer to display messages in QGroundControl, which is especially useful when operating in [offboard mode](https://docs.px4.io/main/en/flight_modes/offboard.html).
 
 
 ![Screenshot from 2024-10-17 13-34-20](https://github.com/user-attachments/assets/c8777135-d031-45c0-a41f-0fd3fdcd7339)
@@ -32,13 +32,16 @@ ros2 run mavlinklog_publisher mavlinklog_publisher_node
 ## Testing in SITL
 
 ### Pre-requisites
-These instructions assume you have already installed and configured the following. Exact commands may vary depending on the PX4 and gazebo versions you are using.
+These instructions assume you have already installed and tested the following:
 
 - [PX4 toolchain](https://docs.px4.io/main/en/dev_setup/dev_env.html)
-- [Gazebo simulation](https://docs.px4.io/main/en/sim_gazebo_gz/)
+- [PX4 Gazebo simulation](https://docs.px4.io/main/en/sim_gazebo_gz/)
 - [uxrce_dds bridge](https://docs.px4.io/main/en/middleware/uxrce_dds.html)
 - [ROS2 humble](https://docs.ros.org/en/humble/Installation.html)
 - [QGroundControl](https://qgroundcontrol.com/downloads/)
+
+> **NOTE**
+>  Exact commands may vary depending on the PX4 and gazebo versions you are using.
 
 1. If you do not done so already, clone and build the `px4_msgs`package.
 
@@ -51,7 +54,7 @@ These instructions assume you have already installed and configured the followin
       > **NOTE**
       > Ensure you have checked out the branch corresponding to the version of PX4 you are using. You must already have ROS2 Humble installed.
 
-2. Clone and build  mavlink_log publisher repo
+2. Clone and build `mavlink_log_publisher` repo
       ```
       git clone https://github.com/TedObrien/mavlinklog_publisher.git
       cd ~/ros2_ws/
@@ -91,7 +94,7 @@ These instructions assume you have already installed and configured the followin
     ```
     MicroXRCEAgent udp4 -p 8888
     ```
-    Confirm mavlink_log ROS2 has been created with `ros2 topic list`, Look for the output.
+    Confirm mavlink_log ROS2 has been created with `ros2 topic list`. Look for the output.
 
     ```
     /uav1/fmu/in/mavlink_log
@@ -105,7 +108,6 @@ These instructions assume you have already installed and configured the followin
 
     ```
     ros2 run mavlinklog_publisher mavlinklog_publisher_node --ros-args -p uav_name:=uav1
-
     ```
     Confirm the `log_msg` topic has been created with `ros2 topic list`
 
@@ -113,7 +115,7 @@ These instructions assume you have already installed and configured the followin
     /uav1/log_msg
     ```
 
-    Publish a  message from the command line:
+    Publish a message from the command line to QGroundControl:
     ```
     ros2 topic pub --once /uav1/log_msg mavlinklog_publisher/msg/LogMsg '{level: 1, message: "Hello World!"}'
     ```
@@ -131,3 +133,5 @@ To run:
 ```
 ros2 run mavlinklog_publisher talker
 ```
+
+The severity of the message sent to QGC can can be modified. See the [`LogMsg` definition](https://github.com/TedObrien/mavlinklog_publisher/blob/main/msg/LogMsg.msg)
