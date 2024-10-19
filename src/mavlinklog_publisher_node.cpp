@@ -27,7 +27,7 @@ public:
       5s, std::bind(&MavlinkLogPublisher::TimerCallback, this));
 
     subscription_ = this->create_subscription<mavlinklog_publisher::msg::LogMsg>(
-      this->get_parameter("uav_name").as_string() + "log_msg", 10, std::bind(&MavlinkLogPublisher::LogMsgCallback, this, _1));
+      this->get_parameter("uav_name").as_string() + "/log_msg", 10, std::bind(&MavlinkLogPublisher::LogMsgCallback, this, _1));
     
   }
   
