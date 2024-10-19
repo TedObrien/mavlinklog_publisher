@@ -2,6 +2,9 @@
 
 A ROS2 node intended for the publishing of human readable messages from a companion computer to QGroundControl via a Flight controller running PX4. The node subscribes to the [`LogMsg`](https://github.com/TedObrien/mavlinklog_publisher/blob/main/msg/LogMsg.msg) defined in this package and published a [`MavlinkLog`](https://github.com/PX4/px4_msgs/blob/main/msg/MavlinkLog.msg) message to the flight controller via the [XRCE-DDS bridge](https://docs.px4.io/main/en/middleware/uxrce_dds.html). This allows greater visibility of processes running on a companion computer.
 
+
+![Screenshot from 2024-10-17 13-34-20](https://github.com/user-attachments/assets/c8777135-d031-45c0-a41f-0fd3fdcd7339)
+
 ## Build/Run
 
 The mavlinklog_publisher package is built and run like any other ROS2 package. Remember to source your workspaces.
@@ -110,5 +113,6 @@ These instructions assume you have already installed and configured the followin
     ros2 topic pub --once /uav1/log_msg mavlinklog_publisher/msg/LogMsg '{level: 1, message: "Hello World!"}'
     ```
     Confirm the message has been displayed by QGroundControl
+![Screenshot from 2024-10-17 13-26-35](https://github.com/user-attachments/assets/4df62a5a-d4e9-45c8-b701-9b48e8c61f33)
 
 ## Integrating into other ROS nodes
