@@ -11,7 +11,7 @@ class MinimalPublisher : public rclcpp::Node
 {
 public:
   MinimalPublisher()
-  : Node("mavlinklogmsg_publisher"), count_(0)
+  : Node("logmsg_publisher"), count_(0)
   {
     publisher_ = this->create_publisher<mavlinklog_publisher::msg::LogMsg>("/log_msg", 10);
     timer_ = this->create_wall_timer(
