@@ -1,15 +1,15 @@
 # mavlinklog_publisher
 
-A ROS2 node intended for the publishing of human readable messages from a companion computer to QGroundControl via a Flight controller running PX4. The node subscribes to the [`LogMsg`](https://github.com/TedObrien/mavlinklog_publisher/blob/main/msg/LogMsg.msg) defined in this package and published a [`MavlinkLog`](https://github.com/PX4/px4_msgs/blob/main/msg/MavlinkLog.msg) message to the flight controller via the [XRCE-DDS bridge](https://docs.px4.io/main/en/middleware/uxrce_dds.html). This allows greater visibility of processes running on a companion computer.
+A ROS2 node intended for the publishing of human readable messages from a companion computer to QGroundControl via a Flight controller running PX4. The node subscribes to the [`LogMsg`](https://github.com/TedObrien/mavlinklog_publisher/blob/main/msg/LogMsg.msg) defined in this package and published a [`MavlinkLog`](https://github.com/PX4/px4_msgs/blob/main/msg/MavlinkLog.msg) message to the flight controller via the [XRCE-DDS bridge](https://docs.px4.io/main/en/middleware/uxrce_dds.html). This allows ROS2 nodes running on a companion computer to display messages to an operator, which is particularly useful when using [offboard mode](https://docs.px4.io/main/en/flight_modes/offboard.html).
 
 
 ![Screenshot from 2024-10-17 13-34-20](https://github.com/user-attachments/assets/c8777135-d031-45c0-a41f-0fd3fdcd7339)
 
 ## Build/Run
 
-The mavlinklog_publisher package is built and run like any other ROS2 package. Remember to source your workspaces.
+The mavlinklog_publisher package is built and run like any other ROS2 package.
 ```
-source /opt/ros/humble/setup.bash
+source /opt/ros/humble/setup.bash 
 cd ~/ros2_ws/
 colcon build --packages-select mavlinklog_publisher
 source install/local_setup.bash
@@ -21,7 +21,7 @@ uav_name
 message_on_start
 ```
 
-> [!NOTE]
+> **NOTE**
 >See more in depth instructions below.
 
 ## Testing in SITL
@@ -43,7 +43,7 @@ These instructions assume you have already installed and configured the followin
       cd ~/ros2_ws/
       colcon build --packages-select px4_msgs
       ```
-      > [!NOTE]
+      > **NOTE**
       > Ensure you have checked out the branch corresponding to the version of PX4 you are using. You must already have ROS2 Humble installed.
 
 2. Clone and build  mavlink_log publisher repo
@@ -68,8 +68,8 @@ These instructions assume you have already installed and configured the followin
         type: px4_msgs::msg::MavlinkLog
 
     ```
-     > [!NOTE]
-    > More detailed instruction on updating this yaml file can be found [here](https://docs.px4.io/main/en/middleware/uxrce_dds.html#dds-topics-yaml)
+     >**NOTE**
+     > More detailed instruction on updating this yaml file can be found [here](https://docs.px4.io/main/en/middleware/uxrce_dds.html#dds-topics-yaml)
 
 
 4. Launch px4 sitl gazebo simulation. In this example a [topic namespace](https://docs.px4.io/main/en/middleware/uxrce_dds.html#customizing-the-topic-namespace) is being used.
@@ -78,7 +78,7 @@ These instructions assume you have already installed and configured the followin
     cd ~/PX4-Autopilot/
     PX4_UXRCE_DDS_NS=uav1 make px4_sitl gz_x500 
     ```
-    >[!NOTE]
+    >**NOTE**
     > you will need to `make clean` first if you previously built the target.
 
 5. Start uXRCE-DDS bridge
@@ -113,6 +113,16 @@ These instructions assume you have already installed and configured the followin
     ros2 topic pub --once /uav1/log_msg mavlinklog_publisher/msg/LogMsg '{level: 1, message: "Hello World!"}'
     ```
     Confirm the message has been displayed by QGroundControl
+
+
 ![Screenshot from 2024-10-17 13-26-35](https://github.com/user-attachments/assets/4df62a5a-d4e9-45c8-b701-9b48e8c61f33)
 
 ## Integrating into other ROS nodes
+
+The script `/src/logmsg_publisher.cpp` is an example of how to publish to the `mavlinklog_publisher_node` from other nodes. 
+
+To run:
+
+```
+ros2 run mavlinklog_publisher talker
+```
